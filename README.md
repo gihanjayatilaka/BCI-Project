@@ -23,6 +23,7 @@ test
   
 test - (real stuff)
   https://github.com/NeuroTechX/bci-workshop/blob/master/INSTRUCTIONS.md
+  this repo has feature vectors, SVM and a bit of ML, but lots of bugs.
   
   install required packages. no need of conda.
   look out for python 2. tkinter should be install using sudo apt-get)
