@@ -39,7 +39,7 @@ def readFiles():
     interestingBands=[0,20,30,40,50,60,70,80,90,100]
     allChannelBandResults=np.ndarray((NO_OF_CHANNELS,len(interestingBands)))
 
-    fileNames=['TrainingData/OpenBCI-RAW-2018-06-03_13-06-27.txt']
+    fileNames=['SavedData/OpenBCI-RAW-2018-06-03_13-06-27.txt']
     Y=[1]
     for file in range(len(fileNames)):
         ar=fileRead(fileNames[file],4,1,4)#complete
