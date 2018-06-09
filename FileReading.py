@@ -120,14 +120,16 @@ def readFiles(fileNameList):
 
 
 
+def readFileAndMakeFeatureVector(fileName):
+    #TO BE IMPLEMENTED
+    return np.ndarray(1)
 
 
 
 
 
 
-
-readFiles(sys.argv[1:])
+#readFiles(sys.argv[1:])
 
 
 #fileRead(sys.argv[1])
