@@ -118,11 +118,13 @@ def readFiles(fileNameList):
 
         plt.show()
 
+        return allChannelBandResults.flatten()
+
 
 
 def readFileAndMakeFeatureVector(fileName):
-    #TO BE IMPLEMENTED
-    return np.ndarray(1)
+
+    return readFiles([fileName])
 
 
 
