@@ -40,7 +40,7 @@ len_test = len(test)
 
 print(len(data))
 
-for i in range(n_test_files):
+for i in range(n_train_files):
     start = random.randint(0, len_train - n_min)
     end = start + n_min + random.randint(0, 500)
     end = min(end, len_train)
@@ -56,7 +56,7 @@ for i in range(n_test_files):
 
     fw.close()
 
-for i in range(n_train_files):
+for i in range(n_test_files):
     start = random.randint(0, len_test - n_min)
     end = start + n_min + random.randint(0, 500)
     end = min(end, len_test)
