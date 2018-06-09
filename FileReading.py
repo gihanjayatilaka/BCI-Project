@@ -1,7 +1,7 @@
 import sys
 from scipy.fftpack import rfft
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 def fileRead(fileName,lineToRemove,leftColToRemove,rightColToRemove):
@@ -22,39 +22,39 @@ def fileRead(fileName,lineToRemove,leftColToRemove,rightColToRemove):
         for xx in range(len(fields)):
             fields[xx]=fields[xx].strip()
 
-
-
         for y in range(leftColToRemove,len(fields)-rightColToRemove):
             #print('converting to float >>>'+fields[y])
             temp.append(float(fields[y]))
+        if len(temp)==0:
+            continue
         ar.append(temp)
-
-    npar=np.array(ar).transpose()
-
-    return npar
+    npar=np.ndarray((len(ar), len(ar[0])))
+    for i in range(len(ar)):
+        for j in range(len(ar[0])):
+            npar[i][j] = ar[i][j]
+    return npar.transpose()
 
 
 def readFiles():
     NO_OF_CHANNELS=8
-    interestingBands=[0,20,30,40,50,60,70,80,90,100]
+    interestingBands=[x for x in range(0,100,2)]
     allChannelBandResults=np.ndarray((NO_OF_CHANNELS,len(interestingBands)))
 
-    fileNames=['SavedData/OpenBCI-RAW-2018-06-03_13-06-27.txt']
+    fileNames=["openBCI_2013-12-24_meditation.txt"]
     Y=[1]
     for file in range(len(fileNames)):
-        ar=fileRead(fileNames[file],4,1,4)#complete
+        ar=fileRead(fileNames[file],1,1,0)#complete
 
-
-
-        for chan in range(len(ar[0])):
+        for chan in range(len(ar)):
             bandResults = np.ndarray(len(interestingBands))
             bandCount = np.ndarray(len(interestingBands))
 
-            freqSpectrum=np.fft.fft(ar[chan])
+            freqSpectrum=np.fft.fft(ar[chan,:])
             timeStep=1.0/250
             n=len(ar[chan])
             freq=np.fft.fftfreq(n,d=timeStep)
-
+            plt.figure()
+            plt.plot(freq, freqSpectrum)
             for f in range(len(freq)):
                 if(freq[f]>0):
                     band=0
@@ -75,13 +75,14 @@ def readFiles():
             allChannelBandResults[chan]=bandResults
 
         print(allChannelBandResults)
-        '''#put the plot code here
-        fig = plt.figure()
+        #put the plot code here
+
 
         for i in range(NO_OF_CHANNELS):
-            plt.plot(interestingBands, bandResults[i,:])
+            plt.figure()
+            plt.plot(interestingBands, allChannelBandResults[i,:])
         plt.show()
-        '''
+
 
 
 
