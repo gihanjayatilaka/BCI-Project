@@ -7,7 +7,6 @@ volatile int mode = BEGIN ;
 
 void setup() {
   Serial.begin(9600);
-  mySerial.begin(9600);
   //lineFollowBegin();
   pinMode(13, OUTPUT);
   pinMode(buttonPin, INPUT_PULLUP);
