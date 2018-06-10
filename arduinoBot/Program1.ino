@@ -3,7 +3,6 @@
 #include <SoftwareSerial.h>
 #include "define.h"
 
-SoftwareSerial mySerial(4, 5); // RX, TX
 volatile int mode = BEGIN ;
 
 void setup() {
