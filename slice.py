@@ -1,10 +1,9 @@
 import random
 
 
-
 n_files = 100
 n_min = 1000
-file_name = 'sample'
+file_name = './threeClasses/rf'
 file = open(file_name + '.txt', 'r')
 
 data = []

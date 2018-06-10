@@ -142,7 +142,7 @@ def readFileAndMakeFeatureVector(fileName):
 
 DIMENSIONS=int(sys.argv[1])
 TRAINING_DATA_POINTS=int(sys.argv[2])
-
+TEST_DATA_POINTS=int(sys.argv[3])
 
 
 
@@ -174,6 +174,29 @@ pre=clf.predict(X)
 for x in range(len(X)):
     print('x='+str(X[x])+' y='+str(Y[x])+' prediction='+str(pre[x]))
     if pre[x] == Y[x]:
+        correct += 1
+    else:
+        wrong += 1
+
+accuracy=(correct*100.0)/(correct+wrong)
+print('accuracy='+str(accuracy))
+
+
+XX=np.ndarray((TEST_DATA_POINTS,DIMENSIONS))
+YY=np.ndarray(TEST_DATA_POINTS)
+for ff in range(TEST_DATA_POINTS):
+    fileName=input('Enter file name\n')
+    XX[ff]=readFileAndMakeFeatureVector(fileName)
+    YY[ff]=int(input('Enter calss\n'))
+
+
+
+correct=0
+wrong=0
+pred=clf.predict(XX)
+for x in range(len(XX)):
+    print(' y='+str(YY[x])+' prediction='+str(pred[x]))
+    if pred[x] == YY[x]:
         correct += 1
     else:
         wrong += 1

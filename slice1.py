@@ -8,7 +8,7 @@ n_train_files = 1000
 n_test = 2000
 n_min = 1000
 
-file_name = 'sample'
+file_name = './threeClasses/rf'
 file = open(file_name + '.txt', 'r')
 
 data = []
