@@ -2,7 +2,27 @@
 String cmd2 = "";
 boolean stringComplete = false;  // whether the string is complete
 */
+char actions[] = {'F', 'R', 'L'};
+
+void doEvent(char c){
+  if (c == 'F'){
+    motorWrite(-150,-150);
+  }else if(c == 'R'){
+      motorWrite(0,-150);
+  }else if(c == 'L'){
+    motorWrite(-150,0);
+  }
+}
+
 void serialEvent() {
+  while (Serial.available()) {
+    char inChar = (char)Serial.read();
+    Serial.println(inChar);
+
+    doEvent(inChar);
+
+  }
+}
 
   /*while (Serial.available()) {
     int r = Serial.read();
@@ -97,6 +117,5 @@ void serialEvent() {
 
     }
   */
-}
 
 
