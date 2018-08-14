@@ -205,8 +205,8 @@ for trainingClass in range(CLASSES):
     fileNames=sliceAndReturnFileNames(bciFile,TRAINING_POINTS_PER_CLASS)
 
     for f in range(len(fileNames)):
-        X[f]=readFileAndMakeFeatureVector(fileNames[f])
-        Y[f]=trainingClass
+        X[trainingClass*TRAINING_POINTS_PER_CLASS + f]=readFileAndMakeFeatureVector(fileNames[f])
+        Y[trainingClass*TRAINING_POINTS_PER_CLASS + f]=trainingClass
 
 print('Finished gathering training data')
 clf = LDA(solver='lsqr')
