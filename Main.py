@@ -13,7 +13,7 @@ import sys
 import numpy as np
 import keras
 
-SEQUENCE_LENGTH = 1000
+SEQUENCE_LENGTH = 500
 
 
 def fileRead(fileName,linesToRemove=4,leftColToRemove=1,rightColToRemove=3):
@@ -93,8 +93,10 @@ def rnnFit(Xtrain,YTrain,NO_CLASSES):
     model.compile(optimizer="adam",loss="mean_squared_error")
     model.summary()
 
+    print(Xnew,Ynew)
+    a=input()
     print("Fitting for shapes: ",Xnew.shape,Ynew.shape)
-    model.fit(Xnew,Ynew,epochs=100)
+    model.fit(Xnew,Ynew,epochs=100,validation_split=0.2)
 
     return model
 
