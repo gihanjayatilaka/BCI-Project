@@ -19,6 +19,7 @@ SEQUENCE_LENGTH = 1000
 def fileRead(fileName,linesToRemove=4,leftColToRemove=1,rightColToRemove=3):
     file  = open(fileName, 'r')
     fullText=file.read()
+    file.close()
     lines=fullText.split('\n')
     for x in range(linesToRemove):
         lines.pop(0)
@@ -93,7 +94,7 @@ def rnnFit(Xtrain,YTrain,NO_CLASSES):
     model.summary()
 
     print("Fitting for shapes: ",Xnew.shape,Ynew.shape)
-    model.fit(Xnew,Ynew)
+    model.fit(Xnew,Ynew,epochs=100)
 
     return model
 
@@ -114,7 +115,7 @@ def rnnPredict(model,X):
             for channel in range(Xtemp.shape[2]):
                 Xtemp[seqNum, timeStamp, channel] = X[channel, startPoints[seqNum] + timeStamp]
 
-    Y=model.predict()
+    Y=model.predict(Xtemp)
 
     print("The result is",Y)
 
