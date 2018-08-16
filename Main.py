@@ -1,11 +1,11 @@
 '''
     USAGE
 
-    python Main.py verboseORsilent algorithm noOFClasses noOfFilesForClass0 file0class0.txt file1class0.txt noOfFilesForClass1 file0class1.txt file1class1.txt noOfFilesToTest testfile1.txt testfile2.txt
+    python Main.py algorithm  verboseORsilent noOFClasses noOfFilesForClass0 file0class0.txt file1class0.txt noOfFilesForClass1 file0class1.txt file1class1.txt noOfFilesToTest testfile1.txt testfile2.txt
 
     ex:
-    python Main.py verbose rnn 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
-    python Main.py silent rnn 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
+    python Main.py rnn verbose 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
+    python Main.py rnn silent 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
 
 
 '''
@@ -14,7 +14,7 @@ import sys
 import numpy as np
 import keras
 
-SEQUENCE_LENGTH = 500
+SEQUENCE_LENGTH = 1000
 VERBOSE=False
 
 
