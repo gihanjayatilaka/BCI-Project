@@ -1,10 +1,11 @@
 '''
     USAGE
 
-    python Main.py noOFClasses noOfFilesForClass0 file0class0.txt file1class0.txt noOfFilesForClass1 file0class1.txt file1class1.txt noOfFilesToTest testfile1.txt testfile2.txt
+    python Main.py verboseORsilent algorithm noOFClasses noOfFilesForClass0 file0class0.txt file1class0.txt noOfFilesForClass1 file0class1.txt file1class1.txt noOfFilesToTest testfile1.txt testfile2.txt
 
     ex:
-    python Main.py 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
+    python Main.py verbose rnn 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
+    python Main.py silent rnn 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
 
 
 '''
@@ -14,6 +15,7 @@ import numpy as np
 import keras
 
 SEQUENCE_LENGTH = 500
+VERBOSE=False
 
 
 def fileRead(fileName,linesToRemove=4,leftColToRemove=1,rightColToRemove=3):
@@ -42,13 +44,14 @@ def fileRead(fileName,linesToRemove=4,leftColToRemove=1,rightColToRemove=3):
     for i in range(len(ar)):
         for j in range(len(ar[0])):
             npar[i][j] = ar[i][j]
-    print("Finished reading file "+fileName+" and returned a matrix: "+str(npar.transpose().shape))
+        npar[i][:]=(npar[i][:]-np.mean(npar[i][:]))/np.sqrt(np.var(npar[i][:]))
+    if(VERBOSE): print("Finished reading file "+fileName+" and returned a matrix: "+str(npar.transpose().shape))
     return npar.transpose()
 
 
 def rnn_model1(NO_CLASSES,NO_CHANNELS):
     from keras.models import Sequential
-    from keras.layers import LSTM,Dense,Softmax
+    from keras.layers import LSTM,Dense,Softmax,BatchNormalization,Input
     model=Sequential()
     model.add(LSTM(100,input_shape=(SEQUENCE_LENGTH,NO_CHANNELS)))
     model.add(Dense(NO_CLASSES))
@@ -82,7 +85,7 @@ def rnnFit(Xtrain,YTrain,NO_CLASSES):
             Xnew=Xtemp
             Ynew=Ytemp
         else:
-            print("Concatnating",Xnew.shape,Xtemp.shape)
+            if(VERBOSE):print("Concatnating",Xnew.shape,Xtemp.shape)
             Xnew=np.concatenate((Xnew,Xtemp))
             Ynew = np.concatenate((Ynew, Ytemp))
 
@@ -93,10 +96,13 @@ def rnnFit(Xtrain,YTrain,NO_CLASSES):
     model.compile(optimizer="adam",loss="mean_squared_error")
     model.summary()
 
-    print(Xnew,Ynew)
-    a=input()
-    print("Fitting for shapes: ",Xnew.shape,Ynew.shape)
-    model.fit(Xnew,Ynew,epochs=100,validation_split=0.2)
+    if (VERBOSE):
+        print(Xnew,Ynew)
+        a=input('Start fitting? [Press ENTER]')
+        print("Fitting for shapes: ",Xnew.shape,Ynew.shape)
+        model.fit(Xnew,Ynew,epochs=100,verbose=1)
+    else:
+        model.fit(Xnew, Ynew, epochs=100, verbose=0)
 
     return model
 
@@ -117,9 +123,14 @@ def rnnPredict(model,X):
             for channel in range(Xtemp.shape[2]):
                 Xtemp[seqNum, timeStamp, channel] = X[channel, startPoints[seqNum] + timeStamp]
 
+    if(VERBOSE):
+        print("TEst dataset is",Xtemp)
+        a=input('Start predicting? [Press ENTER]')
     Y=model.predict(Xtemp)
 
-    print("The result is",Y)
+    if(VERBOSE):print("The result is",Y)
+
+    print("Answer: ",np.argmax(np.sum(Y,axis=0)))
 
 
 
@@ -127,9 +138,12 @@ def rnnPredict(model,X):
 if __name__== "__main__":
     Xtrain=[]
     Ytrain=[]
-    NO_CLASSES=int(sys.argv[1])
-    ALGORITHM=sys.argv[2]
-    argvIndex=3
+    ALGORITHM=(sys.argv[1])
+    if(sys.argv[2] in ['v','verbose','V']):
+        VERBOSE=True
+
+    NO_CLASSES=int(sys.argv[3])
+    argvIndex=4
     FILES_PER_CLASS=np.zeros(NO_CLASSES,dtype=np.int32)
     for classNo in range(NO_CLASSES):
         FILES_PER_CLASS[classNo]=int(sys.argv[argvIndex])
