@@ -18,7 +18,7 @@ COMMAND in this repo:
 
 import sys
 import numpy as np
-SEQUENCE_LENGTH = 4000
+SEQUENCE_LENGTH = 6000
 VERBOSE=False
 
 
@@ -279,7 +279,7 @@ def makeFeatureVectors(X):
                     featureVectors[s,channel,band]+=freqSpectrum[f]
 
 
-    print("Created feature vector of shape ",featureVectors.shape)
+    if(VERBOSE):print("Created feature vector of shape ",featureVectors.shape)
     return  featureVectors
 
 
@@ -343,58 +343,9 @@ if __name__== "__main__":
             cnnPredict(cnnModel, Xtest)
 
     if ALGORITHM=="fft-dnn":
-        XtrainNew=[]
-        YtrainNew=[]
-        for i in range(len(Xtrain)):
-            xNew=makeFeatureVectors(Xtrain[i])
-
-            for x in range(xNew.shape[0]):
-                XtrainNew.append(xNew[x,:,:])
-                YtrainNew.append(Ytrain[i])
-        Xtrain=XtrainNew[0].reshape((1,XtrainNew[0].shape[0],XtrainNew[0].shape[1]))
-
-        for x in range(1,len(XtrainNew)):
-            Xtrain=np.concatenate((Xtrain,XtrainNew[x].reshape((1,XtrainNew[x].shape[0],XtrainNew[x].shape[1]))))
-
-        Ytrain = np.array(YtrainNew)
-        Ytrain=keras.utils.to_categorical(Ytrain)
 
 
-
-        model=dnnForFFT(SampleFeatureVector=Xtrain[0,:,:])
-        model.compile(optimizer="adam", loss="mean_squared_error")
-
-        if(VERBOSE):
-            print("Shapes of training data X,Y",Xtrain.shape,Ytrain.shape)
-
-            while(False):
-                index=int(input("Enter index : "))
-                import matplotlib.pyplot as plt
-
-                fig,axes =plt.subplots(nrows=Xtrain.shape[1],ncols=1,subplot_kw=dict(polar=False))
-                print("DATA",Xtrain[index,:,:])
-                for y in range(Xtrain.shape[1]):
-                    axes[y].plot(range(Xtrain.shape[2]),Xtrain[index,y,:])
-
-
-                plt.show()
-
-
-
-            a=input("Start training? [Press ENTER]")
-
-
-
-
-        model.fit(Xtrain, Ytrain, epochs=200,shuffle=True)
-
-        if(VERBOSE):model.summary()
-
-
-
-
-        FILES_TO_PREDICT = int(sys.argv[argvIndex])
-        argvIndex += 1
+        #model=dnnForFFT()
 
         for predictFileIndex in range(FILES_TO_PREDICT):
             fileNameToRead = sys.argv[argvIndex]
