@@ -6,19 +6,23 @@
     ex:
     python Main.py rnn verbose 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
     python Main.py rnn silent 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
+    python Main.py fft-dnn silent 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
+    python Main.py fft-svm silent 2 2 trainA.txt trainAA.txt 3 trainB.txt trainBB.txt trainBBB.txt 2 testA testB
+
+
+COMMAND in this repo:
+    python3 Main.py fft-svm v 3 2 ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_R1.txt ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_R2.txt 2 ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_G1.txt ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_G2.txt 2 ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_B1.txt ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_B2.txt 3 ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_R3.txt ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_G3.txt ./SavedData/Jali_16_8_18/OpenBCI-RAW-S01_B3.txt
 
 
 '''
 
 import sys
 import numpy as np
-import keras
-
 SEQUENCE_LENGTH = 4000
 VERBOSE=False
 
 
-def fileRead(fileName,linesToRemove=4,leftColToRemove=1,rightColToRemove=3):
+def fileRead(fileName,linesToRemove=2000,leftColToRemove=3,rightColToRemove=6):
     file  = open(fileName, 'r')
     fullText=file.read()
     file.close()
@@ -223,8 +227,8 @@ def rnnPredict(model,X):
 
 def makeFeatureVectors(X):
     PASS_BAND_LOW = 3.0
-    PASS_BAND_HIGH = 50.0
-    NO_OF_BANDS = 5
+    PASS_BAND_HIGH = 100.0
+    NO_OF_BANDS = 20
     TIME_STEP = 1.0 / 250
 
     CHANNELS=X.shape[0]
@@ -368,6 +372,7 @@ if __name__== "__main__":
                 import matplotlib.pyplot as plt
 
                 fig,axes =plt.subplots(nrows=Xtrain.shape[1],ncols=1,subplot_kw=dict(polar=False))
+                print("DATA",Xtrain[index,:,:])
                 for y in range(Xtrain.shape[1]):
                     axes[y].plot(range(Xtrain.shape[2]),Xtrain[index,y,:])
 
@@ -403,6 +408,66 @@ if __name__== "__main__":
             if (VERBOSE): print("The result is", Y)
             print("Answer: ", np.argmax(np.sum(Y, axis=0)))
 
+
+    if ALGORITHM=="fft-svm":
+        XtrainNew=[]
+        YtrainNew=[]
+        for i in range(len(Xtrain)):
+            xNew=makeFeatureVectors(Xtrain[i])
+
+            for x in range(xNew.shape[0]):
+                XtrainNew.append(xNew[x,:,:])
+                YtrainNew.append(Ytrain[i])
+        Xtrain=XtrainNew[0].reshape((1,XtrainNew[0].shape[0],XtrainNew[0].shape[1]))
+
+        for x in range(1,len(XtrainNew)):
+            Xtrain=np.concatenate((Xtrain,XtrainNew[x].reshape((1,XtrainNew[x].shape[0],XtrainNew[x].shape[1]))))
+
+        Ytrain = np.array(YtrainNew)
+
+        Xold=Xtrain
+        Yold=Ytrain
+
+        Xtrain=np.ndarray(shape = (Xtrain.shape[0],Xtrain.shape[1] * Xtrain.shape[2]))
+        Ytrain=np.ndarray(Ytrain.shape[0])
+
+        permutation=np.arange(0,Xold.shape[0])
+        np.random.shuffle(permutation)
+
+        for i in range(permutation.shape[0]):
+            Xtrain[i,:]=np.ndarray.flatten(Xold[permutation[i],:,:])
+            Ytrain[i]=Yold[permutation[i]]
+
+
+        from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+        clf = LDA(solver='lsqr')
+
+        if(VERBOSE):
+            print("Shapes of training data X,Y",Xtrain.shape,Ytrain.shape)
+            a=input("Start training? [Press ENTER]")
+
+
+
+
+        clf.fit(Xtrain, Ytrain)
+
+
+
+
+        FILES_TO_PREDICT = int(sys.argv[argvIndex])
+        argvIndex += 1
+
+        for predictFileIndex in range(FILES_TO_PREDICT):
+            fileNameToRead = sys.argv[argvIndex]
+            argvIndex += 1
+
+            Xtest = fileRead(fileNameToRead)
+            Xtest=makeFeatureVectors(Xtest)
+            Xtest=Xtest.reshape((Xtest.shape[0],Xtest.shape[1]*Xtest.shape[2]))
+            Y=clf.predict(Xtest)
+
+            if (VERBOSE): print("The result is", Y)
+            print("Answer: ", np.mean(Y))
 
 
 
