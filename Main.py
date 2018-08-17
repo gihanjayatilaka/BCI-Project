@@ -14,7 +14,7 @@ import sys
 import numpy as np
 import keras
 
-SEQUENCE_LENGTH = 1000
+SEQUENCE_LENGTH = 4000
 VERBOSE=False
 
 
@@ -221,9 +221,77 @@ def rnnPredict(model,X):
     print("Answer: ",np.argmax(np.sum(Y,axis=0)))
 
 
+def makeFeatureVectors(X):
+    PASS_BAND_LOW = 3.0
+    PASS_BAND_HIGH = 50.0
+    NO_OF_BANDS = 5
+    TIME_STEP = 1.0 / 250
 
+    CHANNELS=X.shape[0]
+
+    singleBandWidth = (PASS_BAND_HIGH - PASS_BAND_LOW) / NO_OF_BANDS
+
+    interestingBands = [x for x in range(NO_OF_BANDS)]
+    allChannelBandResults = np.zeros((CHANNELS, len(interestingBands)))
+
+    startPoints = []
+
+    for x in range(100):
+        startPoint = np.random.randint(0, SEQUENCE_LENGTH)
+        while startPoint + SEQUENCE_LENGTH < X.shape[1]:
+            startPoints.append(startPoint)
+            startPoint += np.random.randint(0, SEQUENCE_LENGTH)
+
+    featureVectors=np.zeros((len(startPoints),CHANNELS,NO_OF_BANDS))
+
+    for s in range(len(startPoints)):
+        for channel in range(CHANNELS):
+            XX=X[channel,startPoints[s]:startPoints[s]+SEQUENCE_LENGTH]
+            XX=XX-np.mean(XX)
+            XX=XX/np.sqrt(np.var(XX))
+
+            freqSpectrum = np.abs(np.fft.rfft(XX))
+            freq=np.fft.rfftfreq(SEQUENCE_LENGTH,TIME_STEP)
+
+
+            #print("Spetrum",freqSpectrum)
+            #print("Frequencies",freq)
+
+            endIndex=0
+            startIndex=0
+            while(freq[startIndex]<PASS_BAND_LOW):
+                startIndex+=1
+            while(freq[endIndex]<PASS_BAND_HIGH):
+                endIndex+=1
+            endIndex-=1
+
+            freqSpectrum=np.abs((freqSpectrum[startIndex:endIndex]))
+            freq=(freq[startIndex:endIndex])
+
+            for f in range(len(freq)):
+                if(freq[f]>0):
+                    band=int((freq[f]-PASS_BAND_LOW)/singleBandWidth)
+                    #print("band=",band)
+                    featureVectors[s,channel,band]+=freqSpectrum[f]
+
+
+    print("Created feature vector of shape ",featureVectors.shape)
+    return  featureVectors
+
+
+def dnnForFFT(SampleFeatureVector):
+    from keras.models import Sequential
+    from keras.layers import Dense,Flatten
+    model=Sequential()
+    model.add(Flatten())
+    model.add(Dense(20, input_shape=SampleFeatureVector.shape, activation="relu"))
+    model.add(Dense(15,input_shape=SampleFeatureVector.shape,activation="relu"))
+    model.add(Dense(10, input_shape=SampleFeatureVector.shape, activation="relu"))
+    model.add(Dense(NO_CLASSES,activation="softmax"))
+    return model
 
 if __name__== "__main__":
+    np.random.seed(0)
     Xtrain=[]
     Ytrain=[]
     ALGORITHM=(sys.argv[1])
@@ -269,6 +337,75 @@ if __name__== "__main__":
 
             Xtest = fileRead(fileNameToRead)
             cnnPredict(cnnModel, Xtest)
+
+    if ALGORITHM=="fft-dnn":
+        XtrainNew=[]
+        YtrainNew=[]
+        for i in range(len(Xtrain)):
+            xNew=makeFeatureVectors(Xtrain[i])
+
+            for x in range(xNew.shape[0]):
+                XtrainNew.append(xNew[x,:,:])
+                YtrainNew.append(Ytrain[i])
+        Xtrain=XtrainNew[0].reshape((1,XtrainNew[0].shape[0],XtrainNew[0].shape[1]))
+
+        for x in range(1,len(XtrainNew)):
+            Xtrain=np.concatenate((Xtrain,XtrainNew[x].reshape((1,XtrainNew[x].shape[0],XtrainNew[x].shape[1]))))
+
+        Ytrain = np.array(YtrainNew)
+        Ytrain=keras.utils.to_categorical(Ytrain)
+
+
+
+        model=dnnForFFT(SampleFeatureVector=Xtrain[0,:,:])
+        model.compile(optimizer="adam", loss="mean_squared_error")
+
+        if(VERBOSE):
+            print("Shapes of training data X,Y",Xtrain.shape,Ytrain.shape)
+
+            while(False):
+                index=int(input("Enter index : "))
+                import matplotlib.pyplot as plt
+
+                fig,axes =plt.subplots(nrows=Xtrain.shape[1],ncols=1,subplot_kw=dict(polar=False))
+                for y in range(Xtrain.shape[1]):
+                    axes[y].plot(range(Xtrain.shape[2]),Xtrain[index,y,:])
+
+
+                plt.show()
+
+
+
+            a=input("Start training? [Press ENTER]")
+
+
+
+
+        model.fit(Xtrain, Ytrain, epochs=200,shuffle=True)
+
+        if(VERBOSE):model.summary()
+
+
+
+
+        FILES_TO_PREDICT = int(sys.argv[argvIndex])
+        argvIndex += 1
+
+        for predictFileIndex in range(FILES_TO_PREDICT):
+            fileNameToRead = sys.argv[argvIndex]
+            argvIndex += 1
+
+            Xtest = fileRead(fileNameToRead)
+            Xtest=makeFeatureVectors(Xtest)
+
+            Y=model.predict(Xtest)
+
+            if (VERBOSE): print("The result is", Y)
+            print("Answer: ", np.argmax(np.sum(Y, axis=0)))
+
+
+
+
 
 
 

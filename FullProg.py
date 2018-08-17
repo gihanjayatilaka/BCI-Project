@@ -171,8 +171,8 @@ def sliceAndReturnFileNames(bciFileName,pointsPerClass):
 
     for i in range(n_files):
 
-        start = start_adj + random.randint(0, n_len - start_adj - n_min)
-        end = start + n_min + random.randint(0, 500)
+        start = start_adj + np.random.randint(0, n_len - start_adj - n_min)
+        end = start + n_min + np.random.randint(0, 500)
         end = min(end, n_len)
         # print(start, end)
 
