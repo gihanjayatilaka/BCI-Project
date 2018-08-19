@@ -3,9 +3,12 @@
 ## Objective
 To analyze the EEG signals from the scalp near the visual cortex to infer what a person is seeing.
 
-## People
-@gihanchanaka @harshana95 @suren3141 @anupamaliwillamuna @NuwanJ @hiruna72
+## Equipment
+[Cyton + Daisy biosensing boards](https://shop.openbci.com/collections/openbci-products/products/cyton-daisy-biosensing-boards-16-channel)
 
+
+## People
+[Gihan](http://gihan.me) , [Harshana](http://teambitecode.com/people/harshana) , [Suren](http://teambitecode.com/people/suren) , [Anupamali](http://teambitecode.com/people/anupamali) , [Nuwan](http://teambitecode.com/people/nuwan), [Hiruna](https://github.com/hiruna72/)
 
 ## Getting started
 
@@ -47,3 +50,8 @@ test
   
   
 #tried and worked in xubuntu.
+
+## Acknowledgements
+
+The equipment were provided by [Cambio wearable computing lab](https://www.facebook.com/CambioWearableComputing/
+) at [Deaprtment of Computer Engineering](http://ce.pdn.ac.lk) , [Faculty of Engineering](http://eng.pdn.ac.lk) , [University of Peradeniya](http://www.pdn.ac.lk/)
