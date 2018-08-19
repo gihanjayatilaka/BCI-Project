@@ -1,19 +1,19 @@
 # BCI-Project
 
-##Objective
+## Objective
 To analyze the EEG signals from the scalp near the visual cortex to infer what a person is seeing.
 
-##People
+## People
 gihanjayatilaka@eng.psn.ac.lk , harshana.w@eng.pdn.ac.lk, suren.sri@eng.pdn.ac.lk, anu321willamuna@gmail.com, nuwanjaliyagoda@eng.pdn.ac.lk, hiruna72@gmail.com
 
 
-##Getting started
+## Getting started
 
-###Python and libraries
+### Python and libraries
 Python3, Numpy, Scipy, Keras, Matplotlib
 
 
-###OpenBCI
+### OpenBCI
 download processing
 
 test
