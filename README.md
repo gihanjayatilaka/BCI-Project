@@ -4,7 +4,7 @@
 To analyze the EEG signals from the scalp near the visual cortex to infer what a person is seeing.
 
 ## People
-gihanjayatilaka@eng.psn.ac.lk , harshana.w@eng.pdn.ac.lk, suren.sri@eng.pdn.ac.lk, anu321willamuna@gmail.com, nuwanjaliyagoda@eng.pdn.ac.lk, hiruna72@gmail.com
+gihanjayatilaka@eng.pdn.ac.lk , harshana.w@eng.pdn.ac.lk, suren.sri@eng.pdn.ac.lk, anu321willamuna@gmail.com, nuwanjaliyagoda@eng.pdn.ac.lk, hiruna72@gmail.com
 
 
 ## Getting started
