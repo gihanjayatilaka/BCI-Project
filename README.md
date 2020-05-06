@@ -4,7 +4,8 @@
 To analyze the EEG signals from the scalp near the visual cortex to infer what a person is seeing.
 
 ## Equipment
-[Cyton + Daisy biosensing boards](https://shop.openbci.com/collections/openbci-products/products/cyton-daisy-biosensing-boards-16-channel)
+[Cyton + Daisy biosensing boards](https://shop.openbci.com/collections/openbci-products/products/cyton-daisy-biosensing-boards-16-channel).
+This equipment (among other BCI, HCI equipment) can be borrowed from [Cambio wearable computing lab of Department of Computer Engineering, University of Peradeniya](https://cepdnaclk.github.io/sites/labs/wearable/).
 
 
 ## People
@@ -53,5 +54,4 @@ test
 
 ## Acknowledgements
 
-The equipment were provided by [Cambio wearable computing lab](https://www.facebook.com/CambioWearableComputing/
-) at [Deaprtment of Computer Engineering](http://ce.pdn.ac.lk) , [Faculty of Engineering](http://eng.pdn.ac.lk) , [University of Peradeniya](http://www.pdn.ac.lk/)
+The equipment were provided by [Cambio wearable computing lab](https://cepdnaclk.github.io/sites/labs/wearable/) at [Deaprtment of Computer Engineering](http://ce.pdn.ac.lk) , [Faculty of Engineering](http://eng.pdn.ac.lk) , [University of Peradeniya](http://www.pdn.ac.lk/)
